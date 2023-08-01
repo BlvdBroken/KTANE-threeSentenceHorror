@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 2bc148b10828e744aa722b9efc3789f6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Module: {instanceID: 0}
+  - BombInfo: {instanceID: 0}
+  - Audio: {instanceID: 0}
+  - BossModule: {instanceID: 0}
+  - Keyway: {instanceID: 0}
+  - KeyCollectSub: {instanceID: 0}
+  - KeyGet: {instanceID: 0}
+  - PostProcess: {instanceID: 0}
+  - ambience: {instanceID: 0}
+  - breathing: {instanceID: 0}
+  - walking: {instanceID: 0}
+  - heartbeat: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

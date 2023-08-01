@@ -1,0 +1,10 @@
+{
+  "name": "threeSentenceHorror-Editor",
+  "references": [
+    "threeSentenceHorror"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}

@@ -1,0 +1,8 @@
+{
+  "name": "threeSentenceHorror",
+  "references": [
+    "GameProxies"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": []
+}
