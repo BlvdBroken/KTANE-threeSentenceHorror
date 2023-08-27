@@ -48,6 +48,8 @@ public class threeSentenceHorror : MonoBehaviour {
     public AudioClip heartbeat;
     private KMAudio.KMAudioRef heartbeatRef;
 
+    private IDictionary<string, object> tpAPI;
+
     static int ModuleIdCounter = 1;
     int _moduleId;
     private bool _moduleSolved;
@@ -82,6 +84,9 @@ public class threeSentenceHorror : MonoBehaviour {
         VigLayer.volumeLayer = LayerMask.GetMask("Post Processing");
         PostProcess.gameObject.layer = LayerMask.NameToLayer("Post Processing");
         PostProcess.gameObject.SetActive(true);*/
+        GameObject tpAPIGameObject = GameObject.Find("TwitchPlays_Info");
+        if (tpAPIGameObject != null)
+            tpAPI = tpAPIGameObject.GetComponent<IDictionary<string, object>>();
         ambienceRef = Audio.PlaySoundAtTransformWithRef("ambience", Module.transform);
         StartCoroutine(waitBetweenSpooks());
     }
@@ -239,6 +244,8 @@ public class threeSentenceHorror : MonoBehaviour {
         }
         else if ((choosy % 2 == 0) && (micless == false))
         {
+            if (tpAPI != null)
+                tpAPI["ircConnectionSendMessage"] = "*HEAVY FOOTSTEPS*";
             walkingRef = Audio.PlaySoundAtTransformWithRef("walking", Module.transform);
             yield return new WaitForSeconds(5);
             _isSpooking = 1;
@@ -248,8 +255,13 @@ public class threeSentenceHorror : MonoBehaviour {
         }
         else
         {
+            if (tpAPI != null)
+                tpAPI["ircConnectionSendMessage"] = "*HEAVY BREATHING*";
             breathingRef = Audio.PlaySoundAtTransformWithRef("breathing", Module.transform);
-            yield return new WaitForSeconds(5);
+            if (tpAPI != null)
+                yield return new WaitForSeconds(10);
+            else
+                yield return new WaitForSeconds(5);
             _isSpooking = 2;
             yield return new WaitForSeconds(15);
             _isSpooking = 0;
