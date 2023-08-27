@@ -20,7 +20,7 @@ MonoBehaviour:
     Made for Modding Jam #5
 
 
-    Thanks you''s are in the unfiltered log and the source code''s readme.'
-  version: v1.1
+    Thanks you''s are in the source code''s readme.'
+  version: v1.2
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b64a2356d33e9a24db7176156c52a564, type: 3}

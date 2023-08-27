@@ -245,11 +245,20 @@ public class threeSentenceHorror : MonoBehaviour {
         else if ((choosy % 2 == 0) && (micless == false))
         {
             if (tpAPI != null)
-                tpAPI["ircConnectionSendMessage"] = "*HEAVY FOOTSTEPS*";
+                tpAPI["ircConnectionSendMessage"] = "*FOOTSTEPS*";
             walkingRef = Audio.PlaySoundAtTransformWithRef("walking", Module.transform);
-            yield return new WaitForSeconds(5);
-            _isSpooking = 1;
-            yield return new WaitForSeconds(15);
+            if (tpAPI != null)
+            {
+                yield return new WaitForSeconds(8);
+                _isSpooking = 1;
+                yield return new WaitForSeconds(12);
+            }
+            else
+            {
+                yield return new WaitForSeconds(5);
+                _isSpooking = 1;
+                yield return new WaitForSeconds(15);
+            }
             _isSpooking = 0;
             StartCoroutine(waitBetweenSpooks());
         }
@@ -259,16 +268,22 @@ public class threeSentenceHorror : MonoBehaviour {
                 tpAPI["ircConnectionSendMessage"] = "*HEAVY BREATHING*";
             breathingRef = Audio.PlaySoundAtTransformWithRef("breathing", Module.transform);
             if (tpAPI != null)
-                yield return new WaitForSeconds(10);
+            {
+                yield return new WaitForSeconds(8);
+                _isSpooking = 2;
+                yield return new WaitForSeconds(12);
+            }
             else
+            {
                 yield return new WaitForSeconds(5);
-            _isSpooking = 2;
-            yield return new WaitForSeconds(15);
+                _isSpooking = 2;
+                yield return new WaitForSeconds(15);
+            }
             _isSpooking = 0;
             StartCoroutine(waitBetweenSpooks());
         }
         _activations++;
-        DebugMsg("Unspooking");
+        //DebugMsg("Unspooking");
     }
 
     IEnumerator Unlock(bool hasKey)
