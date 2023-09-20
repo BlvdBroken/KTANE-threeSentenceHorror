@@ -10,7 +10,7 @@ using UnityEngine.Rendering.PostProcessing;
 using KModkit;
 using Wawa.Optionals;
 using Wawa.DDL;
-//using Wawa.IO;
+using Wawa.IO;
 using Rand = UnityEngine.Random;
 
 public class threeSentenceHorror : MonoBehaviour {
@@ -37,6 +37,7 @@ public class threeSentenceHorror : MonoBehaviour {
     private string _device;
     private bool micless = false;
     private float _prevRate;
+    private bool jumpscareMode;
 
     private AudioClip _clipRecord = new AudioClip();
     public AudioClip ambience;
@@ -79,11 +80,16 @@ public class threeSentenceHorror : MonoBehaviour {
         InitMic();
         _isInitialized = true;
         Wawa.DDL.Preferences.Music = 0;
-        /*PostProcessLayer VigLayer = Camera.main.gameObject.AddComponent<PostProcessLayer>();
+        var ModSettings = new Config<TSHSettings>();
+        if (Wawa.DDL.Missions.Description.Contains("It seems you are not alone.") || ModSettings.Read().IncludeJumpscares)
+        {
+            jumpscareMode = true;
+        }
+        PostProcessLayer VigLayer = Camera.main.gameObject.AddComponent<PostProcessLayer>();
         VigLayer.Init(postProcessResources);
         VigLayer.volumeLayer = LayerMask.GetMask("Post Processing");
         PostProcess.gameObject.layer = LayerMask.NameToLayer("Post Processing");
-        PostProcess.gameObject.SetActive(true);*/
+        PostProcess.gameObject.SetActive(true);
         GameObject tpAPIGameObject = GameObject.Find("TwitchPlays_Info");
         if (tpAPIGameObject != null)
             tpAPI = tpAPIGameObject.GetComponent<IDictionary<string, object>>();
@@ -103,7 +109,6 @@ public class threeSentenceHorror : MonoBehaviour {
     { //Shit that happens at any point after initialization
         if (!_moduleSolved)
         {
-            //TODO Remove .Remove
             IEnumerable<string> solvableList = BombInfo.GetSolvableModuleNames().Where(x => !ignored.Contains(x));
 		    IEnumerable<string> solvedList = BombInfo.GetSolvedModuleNames().Where(x => solvableList.Contains(x));
             if (BombInfo.GetSolvableModuleNames().Count() == 1 || solvedList.Count() >= solvableList.Count())
@@ -310,4 +315,11 @@ public class threeSentenceHorror : MonoBehaviour {
         Debug.LogFormat("[Three Sentence Horror #{0}] {1}", _moduleId, msg.Replace('\n', ' '));
     }
 
+}
+
+public class TSHSettings
+{
+    public bool IncludeJumpscares { get; set; }
+
+    public TSHSettings() {}
 }
