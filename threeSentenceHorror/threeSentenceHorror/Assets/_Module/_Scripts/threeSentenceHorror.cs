@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Rendering.PostProcessing;
+//using UnityEngine.Rendering.PostProcessing;
 using KModkit;
 using Wawa.Optionals;
 using Wawa.DDL;
@@ -25,18 +25,19 @@ public class threeSentenceHorror : MonoBehaviour {
     public KMSelectable Keyway;
     public GameObject KeyCollectSub;
     public GameObject KeyGet;
-    public PostProcessVolume PostProcess;
-    public PostProcessResources postProcessResources;
+    public GameObject VignetteImage;
+    /*public PostProcessVolume PostProcess;
+    public PostProcessResources postProcessResources;*/
     private bool _hasKey = false;
-    public static bool _isPlaying = false;
-    public static int _isSpooking = 0;
+    public bool _isPlaying = false;
+    public int _isSpooking = 0;
     private int _activations = 0;
     public static float MicLoudness;
     private int _sampleWindow = 128;
-    private bool _isInitialized;
+    private static bool _isInitialized = false;
     private string _device;
     private bool micless = false;
-    private float _prevRate;
+    private static float _prevRate;
     private bool jumpscareMode;
 
     private AudioClip _clipRecord = new AudioClip();
@@ -48,6 +49,7 @@ public class threeSentenceHorror : MonoBehaviour {
     private KMAudio.KMAudioRef walkingRef;
     public AudioClip heartbeat;
     private KMAudio.KMAudioRef heartbeatRef;
+    public AudioClip jumpscare;
 
     private IDictionary<string, object> tpAPI;
 
@@ -63,6 +65,8 @@ public class threeSentenceHorror : MonoBehaviour {
     }
 
     void OnDestroy () { //Shit you need to do when the bomb ends
+        _isInitialized = false;
+        _prevRate = 0;
         _isPlaying = false;
         _isSpooking = 0;
         KeyCollectSub.GetComponent<Text>().text = "";
@@ -72,7 +76,8 @@ public class threeSentenceHorror : MonoBehaviour {
         if (heartbeatRef != null) heartbeatRef.StopSound();
         if (ambienceRef != null) ambienceRef.StopSound();
         KeyGet.SetActive(false);
-        PostProcess.gameObject.SetActive(false);
+        VignetteImage.SetActive(false);
+        //PostProcess.gameObject.SetActive(false);
     }
 
     void Activate () { //Shit that should happen when the bomb arrives (factory)/Lights turn on
@@ -85,11 +90,12 @@ public class threeSentenceHorror : MonoBehaviour {
         {
             jumpscareMode = true;
         }
-        PostProcessLayer VigLayer = Camera.main.gameObject.AddComponent<PostProcessLayer>();
+        if (_isInitialized) VignetteImage.SetActive(true);
+        /*PostProcessLayer VigLayer = Camera.main.gameObject.AddComponent<PostProcessLayer>();
         VigLayer.Init(postProcessResources);
         VigLayer.volumeLayer = LayerMask.GetMask("Post Processing");
         PostProcess.gameObject.layer = LayerMask.NameToLayer("Post Processing");
-        PostProcess.gameObject.SetActive(true);
+        PostProcess.gameObject.SetActive(true);*/
         GameObject tpAPIGameObject = GameObject.Find("TwitchPlays_Info");
         if (tpAPIGameObject != null)
             tpAPI = tpAPIGameObject.GetComponent<IDictionary<string, object>>();
@@ -154,6 +160,7 @@ public class threeSentenceHorror : MonoBehaviour {
     void Solve ()
     {
         KeyCollectSub.GetComponent<Text>().text = "";
+        VignetteImage.SetActive(false);
         _moduleSolved = true;
         Wawa.DDL.KMBombStrikeExtensions.SetRate(Bomb, _prevRate);
         if (breathingRef != null) breathingRef.StopSound();
@@ -175,10 +182,14 @@ public class threeSentenceHorror : MonoBehaviour {
     {
         _hasKey = true;
         KeyGet.SetActive(true);
-        _prevRate = Wawa.DDL.KMBombStrikeExtensions.GetRate(Bomb);
+        if (_prevRate == 0)
+        {
+            _prevRate = Wawa.DDL.KMBombStrikeExtensions.GetRate(Bomb);
+        }
         Wawa.DDL.KMBombStrikeExtensions.SetRate(Bomb, 5 * _prevRate, true);
         heartbeatRef = Audio.PlaySoundAtTransformWithRef("heartbeat", Module.transform);
-        KeyCollectSub.GetComponent<Text>().text = "I think someone's coming, I better get out of here.";
+        if (jumpscareMode) Audio.PlaySoundAtTransform("jumpscare", Module.transform);
+        KeyCollectSub.GetComponent<Text>().text = (jumpscareMode ? "Run." : "I think someone's coming, I better get out of here.");
     }
 
     /*private IEnumerator AmbientNoise()
@@ -235,13 +246,13 @@ public class threeSentenceHorror : MonoBehaviour {
         if (walkingRef != null) walkingRef.StopSound();
         yield return new WaitForSeconds(Rand.Range(20, 60));
         StartCoroutine(Spook());
-        DebugMsg("Spooking");
+        //DebugMsg("Spooking");
     }
 
     private IEnumerator Spook()
     {
         int choosy = Rand.Range(1, 101);
-        DebugMsg(choosy.ToString());
+        //DebugMsg(choosy.ToString());
         if (choosy < _activations)
         {
             _isSpooking = 3;
@@ -299,7 +310,7 @@ public class threeSentenceHorror : MonoBehaviour {
             DebugMsg("You've escaped... for now.");
             _hasKey = false;
             KeyGet.SetActive(false);
-            PostProcess.gameObject.SetActive(false);
+            //PostProcess.gameObject.SetActive(false);
             yield return null;
         } else 
         {
