@@ -83,6 +83,7 @@ public class threeSentenceHorror : MonoBehaviour {
     void Activate () { //Shit that should happen when the bomb arrives (factory)/Lights turn on
         Bomb = Module.GetComponentInParent<KMBomb>();
         InitMic();
+        if (!_isInitialized) VignetteImage.SetActive(true); // prevents stacking vig effects with multiple mods
         _isInitialized = true;
         Wawa.DDL.Preferences.Music = 0;
         var ModSettings = new Config<TSHSettings>();
@@ -90,7 +91,6 @@ public class threeSentenceHorror : MonoBehaviour {
         {
             jumpscareMode = true;
         }
-        if (_isInitialized) VignetteImage.SetActive(true);
         /*PostProcessLayer VigLayer = Camera.main.gameObject.AddComponent<PostProcessLayer>();
         VigLayer.Init(postProcessResources);
         VigLayer.volumeLayer = LayerMask.GetMask("Post Processing");
@@ -185,6 +185,7 @@ public class threeSentenceHorror : MonoBehaviour {
         if (_prevRate == 0)
         {
             _prevRate = Wawa.DDL.KMBombStrikeExtensions.GetRate(Bomb);
+            DebugMsg(String.Format("Prev rate is {0}", _prevRate));
         }
         Wawa.DDL.KMBombStrikeExtensions.SetRate(Bomb, 5 * _prevRate, true);
         heartbeatRef = Audio.PlaySoundAtTransformWithRef("heartbeat", Module.transform);
@@ -244,7 +245,7 @@ public class threeSentenceHorror : MonoBehaviour {
     {
         if (breathingRef != null) breathingRef.StopSound();
         if (walkingRef != null) walkingRef.StopSound();
-        yield return new WaitForSeconds(Rand.Range(20, 60));
+        yield return new WaitForSeconds(Rand.Range(30, 80));
         StartCoroutine(Spook());
         //DebugMsg("Spooking");
     }

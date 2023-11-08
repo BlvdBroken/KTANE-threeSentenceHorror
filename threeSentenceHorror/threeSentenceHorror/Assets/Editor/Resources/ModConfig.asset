@@ -21,6 +21,6 @@ MonoBehaviour:
 
 
     Thanks you''s are in the source code''s readme.'
-  version: v2.1
+  version: v2.2
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b64a2356d33e9a24db7176156c52a564, type: 3}
