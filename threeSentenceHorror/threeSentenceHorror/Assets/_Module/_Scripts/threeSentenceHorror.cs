@@ -87,7 +87,15 @@ public class threeSentenceHorror : MonoBehaviour {
         _isInitialized = true;
         Wawa.DDL.Preferences.Music = 0;
         var ModSettings = new Config<TSHSettings>();
-        if (Wawa.DDL.Missions.Description.Contains("It seems you are not alone.") || ModSettings.Read().IncludeJumpscares)
+        // checks if there is a mission description, then checks its value.
+        if (Wawa.DDL.Missions.Description.IsSome)
+        {
+            if (Wawa.DDL.Missions.Description.Value.Contains("It seems you are not alone."))
+            {
+                jumpscareMode = true;
+            }
+        }
+        if (ModSettings.Read().IncludeJumpscares)
         {
             jumpscareMode = true;
         }
@@ -140,14 +148,14 @@ public class threeSentenceHorror : MonoBehaviour {
                 if (MicLoudness > 8)
                 {
                     Strike();
-                    DebugMsg("They heard you...");
+                    DebugMsg("They heard you... (Strike: You should have kept quiet when you heard footsteps.)");
                 }
                 break;
             case 2:
                 if (HeldBomb.HoldState == FloatingHoldable.HoldStateEnum.Held)
                 {
                     Strike();
-                    DebugMsg("The flashing lights seem to attract them...");
+                    DebugMsg("You should have hidden... (Strike: You should have dropped the bomb when there was breathing.)");
                 }
                 break;
             case 3:
@@ -185,7 +193,7 @@ public class threeSentenceHorror : MonoBehaviour {
         if (_prevRate == 0)
         {
             _prevRate = Wawa.DDL.KMBombStrikeExtensions.GetRate(Bomb);
-            DebugMsg(String.Format("Prev rate is {0}", _prevRate));
+            //DebugMsg(String.Format("Prev rate is {0}", _prevRate));
         }
         Wawa.DDL.KMBombStrikeExtensions.SetRate(Bomb, 5 * _prevRate, true);
         heartbeatRef = Audio.PlaySoundAtTransformWithRef("heartbeat", Module.transform);
