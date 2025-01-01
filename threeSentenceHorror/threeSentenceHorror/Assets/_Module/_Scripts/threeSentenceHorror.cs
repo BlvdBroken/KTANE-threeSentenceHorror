@@ -267,7 +267,7 @@ public class threeSentenceHorror : MonoBehaviour {
             _isSpooking = 3;
             yield return null;
         }
-        else if ((choosy % 2 == 0) && (micless == false))
+        else if ((choosy % 2 == 0) && (micless == false || tpAPI != null))
         {
             if (tpAPI != null)
                 tpAPI["ircConnectionSendMessage"] = "*FOOTSTEPS*";
